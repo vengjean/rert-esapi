@@ -1,0 +1,60 @@
+﻿// ReRT - https://github.com/vengjean/rert-esapi
+// Copyright (c) 2025-2026 Veng Jean Heng. Licensed under the MIT License; see LICENSE.
+// SPDX-License-Identifier: MIT
+// Portions derived from DoseConverter (https://github.com/NickChng/DoseConverter),
+// Copyright (c) 2021 Denis Brojan, MIT License.
+
+using System.Windows;
+using System.Windows.Documents;
+using HTMLConverter;
+using System.Windows.Controls;
+
+namespace ReRT.Behaviours
+{
+    public static class HtmlTextBoxProperties
+    {
+        public static string GetHtmlText(TextBlock wb)
+        {
+            return wb.GetValue(HtmlTextProperty) as string;
+        }
+        public static void SetHtmlText(TextBlock wb, string html)
+        {
+            wb.SetValue(HtmlTextProperty, html);
+        }
+        public static readonly DependencyProperty HtmlTextProperty =
+            DependencyProperty.RegisterAttached("HtmlText", typeof(string), typeof(HtmlTextBoxProperties), new UIPropertyMetadata("", OnHtmlTextChanged));
+
+        private static void OnHtmlTextChanged(
+            DependencyObject depObj, DependencyPropertyChangedEventArgs e)
+        {
+            // Go ahead and return out if we set the property
+            //on something other than a textblock, or set a value that is not a string.
+            var txtBox = depObj as TextBlock;
+            if (txtBox == null)
+                return;
+            if (!(e.NewValue is string))
+                return;
+            var html = e.NewValue as string;
+            string xaml;
+            InlineCollection xamLines;
+            try
+            {
+                xaml = HtmlToXamlConverter.ConvertHtmlToXaml(html, false);
+                xamLines = ((Paragraph)((Section)System.Windows.Markup.XamlReader.Parse(xaml)).Blocks.FirstBlock).Inlines;
+            }
+            catch
+            {
+                // There was a problem parsing the html, return out. 
+                return;
+            }
+            // Create a copy of the Inlines and add them to the TextBlock.
+            Inline[] newLines = new Inline[xamLines.Count];
+            xamLines.CopyTo(newLines, 0);
+            txtBox.Inlines.Clear();
+            foreach (var l in newLines)
+            {
+                txtBox.Inlines.Add(l);
+            }
+        }
+    }
+}

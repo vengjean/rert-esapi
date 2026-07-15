@@ -1,0 +1,7 @@
+recoveryCurves:
+  Lung:
+    discount:  [0.0, 10.0, 25.0, 50.0]
+    timepoint: [3.0,  6.0, 12.0, 36.0]
+  Bowel_Small:
+    discount:  [0.0,  0.0, 25.0, 40.0]
+    timepoint: [3.0,  6.0, 12.0, 36.0]

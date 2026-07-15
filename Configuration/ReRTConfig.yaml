@@ -1,0 +1,306 @@
+# ReRT structure & constraint definitions.
+#
+# Constraint sets shipped here represent published clinical guidance:
+#   - "Michigan"  Paradis et al. UMichigan re-irradiation EQD2 limits.
+#   - "SABR"      Stanford SABR/SBRT EQD2 limits.
+#   - "PHYS"      Extra physical-dose metrics (display only — no op/limit).
+# Institutions can override or extend these via additional YAML files
+# loaded at startup (see Configuration/InstitutionConfig.local.yaml).
+#
+# Schema:
+#   structures.<Label>.alphaBetaRatio: number        (αβ for EQD2)
+#   structures.<Label>.aliases:        [string, ...] (case-insensitive,
+#                                                    underscores ignored
+#                                                    when matching ESAPI ids)
+#   structures.<Label>.constraints.<Set>: list of constraint dicts
+#       constraint dict keys:
+#           metric: Dmax | Mean | V | VolumeSpared
+#           dose:   "20Gy" | "2000cGy"   (only for V/VolumeSpared)
+#           op:     '<' | '<=' | '>' | '>='
+#           limit:  "85Gy" | "40%" | "1000cc"
+#       SABR convention: the FIRST entry is treated as the "Michigan-equivalent"
+#       display header (rendered, never compared); remaining entries are
+#       evaluated. A leading `null` means there's no Michigan equivalent.
+#   structures.<Label>.extraMetrics.<Set>: list of {metric, dose} dicts
+#       Used by the PHYS branch — just compute & display, never compare.
+
+version: 0.1
+
+defaults:
+  alphaBetaRatio: 2.5
+  # Ordered priority for picking THE body contour when a patient has
+  # multiple candidates aliased to "Body" (e.g. both a Body and a Skin
+  # structure). The first name in this list that matches a candidate's
+  # ESAPI Id (case-insensitive, underscores ignored) becomes the body
+  # contour; remaining candidates are demoted to plain OARs.
+  bodyContourPriority: [Body, External, Skin]
+
+structures:
+
+  Body:
+    alphaBetaRatio: 2.5
+    aliases: [BODY, External, Skin, SKIN]
+
+  Bladder:
+    alphaBetaRatio: 2.5
+    aliases: [Bladder]
+    constraints:
+      Michigan:
+        - {metric: Dmax, op: '<', limit: 85Gy}
+      SABR:
+        - {metric: Dmax, op: '<', limit: 102Gy}
+
+  Bowel_Small:
+    alphaBetaRatio: 2.5
+    aliases: [Bowel_Small, SmallBowel, Small_Bowel, SmallIntestine, Bowel]
+    constraints:
+      Michigan:
+        - {metric: Dmax, op: '<', limit: 54Gy}
+      SABR:
+        - {metric: Dmax, op: '<', limit: 85.3Gy}
+
+  BrachialPlexus:
+    alphaBetaRatio: 2.5
+    aliases: [BrachialPlex, BrachialPlexus, Brachial_Plexus]
+    constraints:
+      Michigan:
+        - {metric: Dmax, op: '<', limit: 70Gy}
+      SABR:
+        - {metric: Dmax, op: '<', limit: 65Gy}
+
+  Brain:
+    alphaBetaRatio: 2.5
+    aliases: [Brain]
+
+  Brainstem:
+    alphaBetaRatio: 2.5
+    aliases: [Brainstem]
+    constraints:
+      Michigan:
+        - {metric: Dmax, op: '<', limit: 64Gy}
+      SABR:
+        - {metric: Dmax, op: '<', limit: 60Gy}
+
+  SpinalCord:
+    alphaBetaRatio: 2.5
+    aliases: [SpinalCord, Spinal_Cord, SpinalCord_PRV, SpinalCanal, SpinalCanalPRV]
+    constraints:
+      Michigan:
+        - {metric: Dmax, op: '<', limit: 50Gy}
+      SABR:
+        - {metric: Dmax, op: '<', limit: 50.4Gy}
+
+  Bronchus:
+    alphaBetaRatio: 2.5
+    aliases: [BronchTree, Bronchus, Bronc]
+    constraints:
+      Michigan:
+        - {metric: Dmax, op: '<', limit: 70Gy}
+      SABR:
+        - {metric: Dmax, op: '<', limit: 93.3Gy}
+
+  Trachea:
+    alphaBetaRatio: 2.5
+    aliases: [Trachea]
+    constraints:
+      Michigan:
+        - {metric: Dmax, op: '<', limit: 70Gy}
+      SABR:
+        - {metric: Dmax, op: '<', limit: 138.9Gy}
+
+  Lung:
+    alphaBetaRatio: 2.5
+    aliases: [Lungs-GTV, Lung-GTV, Lungs, "Lung R", "Lung L", Lung_R, Lung_L, Lungs-ITV, Lung-ITV]
+    constraints:
+      Michigan:
+        - {metric: VolumeSpared, dose: 16Gy, op: '>', limit: 1000cc}
+      SABR:
+        # First entry is the Michigan-equivalent header; `null` means there is
+        # no Michigan equivalent shown.
+        - null
+        - {metric: V, dose: 20Gy, op: '<', limit: 40%}
+    extraMetrics:
+      PHYS:
+        - {metric: V, dose: 20Gy}
+
+  Liver:
+    alphaBetaRatio: 2.5
+    aliases: [Liver-GTV, Liver-PTV, Liver]
+    constraints:
+      Michigan:
+        - {metric: VolumeSpared, dose: 32Gy, op: '>', limit: 700cc}
+      SABR:
+        - {metric: VolumeSpared, dose: 32Gy, op: '>', limit: 700cc}
+        - {metric: Mean, op: '<', limit: 30Gy}
+    extraMetrics:
+      PHYS:
+        - {metric: VolumeSpared, dose: 32Gy}
+
+  Heart:
+    alphaBetaRatio: 2.5
+    aliases: [Heart]
+    constraints:
+      Michigan:
+        - {metric: Dmax, op: '<', limit: 70Gy}
+      SABR:
+        - {metric: Dmax, op: '<', limit: 85Gy}
+
+  Kidney:
+    alphaBetaRatio: 2.5
+    aliases: [Kidney_R, Kidney_L, Kidneys, Kidney]
+    constraints:
+      Michigan:
+        - {metric: VolumeSpared, dose: 23Gy, op: '>', limit: 200cc}
+      SABR:
+        - {metric: VolumeSpared, dose: 23Gy, op: '>', limit: 200cc}
+
+  CaudaEquina:
+    alphaBetaRatio: 2.5
+    aliases: [CaudaEquina, Cauda_Equina]
+    constraints:
+      Michigan:
+        - {metric: Dmax, op: '<', limit: 60Gy}
+      SABR:
+        - {metric: Dmax, op: '<', limit: 61.5Gy}
+
+  Cochlea:
+    alphaBetaRatio: 2.5
+    aliases: [Cochlea, Cochlea_R, Cochlea_L]
+    constraints:
+      Michigan:
+        - {metric: Dmax, op: '<', limit: 45Gy}
+      SABR:
+        - {metric: Dmax, op: '<', limit: 33.7Gy}
+
+  Colon:
+    alphaBetaRatio: 2.5
+    aliases: [Colon]
+    constraints:
+      Michigan:
+        - {metric: Dmax, op: '<', limit: 70Gy}
+      SABR:
+        - {metric: Dmax, op: '<', limit: 85Gy}
+
+  Colon_Sigmoid:
+    alphaBetaRatio: 2.5
+    aliases: [Colon_Sigmoid, SigmoidColon]
+    constraints:
+      Michigan:
+        - {metric: Dmax, op: '<', limit: 70Gy}
+      SABR:
+        - {metric: Dmax, op: '<', limit: 85Gy}
+
+  Bowel_Large:
+    alphaBetaRatio: 2.5
+    aliases: [Bowel_Large, LargeBowel, Large_Bowel]
+    constraints:
+      Michigan:
+        - {metric: Dmax, op: '<', limit: 70Gy}
+      SABR:
+        - {metric: Dmax, op: '<', limit: 85.3Gy}
+
+  Duodenum:
+    alphaBetaRatio: 2.5
+    aliases: [Duodenum]
+    constraints:
+      Michigan:
+        - {metric: Dmax, op: '<', limit: 54Gy}
+      SABR:
+        - {metric: Dmax, op: '<', limit: 85Gy}
+
+  Esophagus:
+    alphaBetaRatio: 2.5
+    aliases: [Esophagus]
+    constraints:
+      Michigan:
+        - {metric: Dmax, op: '<', limit: 70Gy}
+      SABR:
+        - {metric: Dmax, op: '<', limit: 85Gy}
+
+  GreatVessel:
+    alphaBetaRatio: 2.5
+    aliases: [GreatVes, GreatVessel, GreatVessels]
+    constraints:
+      Michigan:
+        - {metric: Dmax, op: '<', limit: 100Gy}
+      SABR:
+        - {metric: Dmax, op: '<', limit: 154.3Gy}
+
+  Aorta:
+    alphaBetaRatio: 2.5
+    aliases: [Aorta]
+    constraints:
+      Michigan:
+        - {metric: Dmax, op: '<', limit: 100Gy}
+      SABR:
+        - {metric: Dmax, op: '<', limit: 154.3Gy}
+
+  Larynx:
+    alphaBetaRatio: 2.5
+    aliases: [Larynx]
+
+  Musc_Constrict_S:
+    alphaBetaRatio: 2.5
+    aliases: [Musc_Constrict_S, MuscConstrictS]
+
+  Musc_Constrict_I:
+    alphaBetaRatio: 2.5
+    aliases: [Musc_Constrict_I, MuscConstrictI]
+
+  OpticChiasm:
+    alphaBetaRatio: 2.5
+    aliases: [OpticChiasm, Optic_Chiasm, Chiasm]
+    constraints:
+      Michigan:
+        - {metric: Dmax, op: '<', limit: 54Gy}
+      SABR:
+        - {metric: Dmax, op: '<', limit: 41.7Gy}
+
+  OpticNerve:
+    alphaBetaRatio: 2.5
+    aliases: [OpticNrv, OpticNerve, OpticNerve_L, OpticNerve_R, Nerve]
+    constraints:
+      Michigan:
+        - {metric: Dmax, op: '<', limit: 54Gy}
+      SABR:
+        - {metric: Dmax, op: '<', limit: 41.7Gy}
+
+  Rectum:
+    alphaBetaRatio: 2.5
+    aliases: [Rectum]
+    constraints:
+      Michigan:
+        - {metric: Dmax, op: '<', limit: 80Gy}
+      SABR:
+        - {metric: Dmax, op: '<', limit: 102Gy}
+
+  Retina:
+    alphaBetaRatio: 2.5
+    aliases: [Retina, Retina_L, Retina_R]
+    constraints:
+      Michigan:
+        - {metric: Dmax, op: '<', limit: 50Gy}
+
+  SacralPlexus:
+    alphaBetaRatio: 2.5
+    aliases: [SacralPlex, SacralPlexus]
+    constraints:
+      Michigan:
+        - {metric: Dmax, op: '<', limit: 70Gy}
+      SABR:
+        - {metric: Dmax, op: '<', limit: 63.3Gy}
+
+  Stomach:
+    alphaBetaRatio: 2.5
+    aliases: [Stomach]
+    constraints:
+      Michigan:
+        - {metric: Dmax, op: '<', limit: 54Gy}
+      SABR:
+        - {metric: Dmax, op: '<', limit: 85Gy}
+
+  # Catch-all for structures the user maps manually. No aliases — never
+  # auto-matched. Listed here so it appears in the StructureLabel dropdown.
+  Other:
+    alphaBetaRatio: 2.5
+    aliases: []

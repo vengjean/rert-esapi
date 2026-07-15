@@ -1,0 +1,171 @@
+<!--
+  Prior RT Physics Consult report body. Edited by ReportBuilder via
+  TemplateRenderer ({{token}} substitution + data-repeat row expansion).
+  Institutional branding tokens (e.g. {{institution_constraint_attribution}})
+  are populated from InstitutionConfig (Configuration/InstitutionConfig.*.yaml).
+
+  Editing notes:
+  - {{tokens}} are scalar substitutions; missing tokens raise a clear error.
+  - <... data-repeat="key">...</...> is repeated once per row in the
+    matching dataset. The element itself is the row template; nested
+    data-repeat elements are driven by per-row sub-repeats.
+  - Sections use data-repeat with a 0-or-1-row dataset to toggle visibility.
+-->
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title>Prior RT Physics Consult</title>
+    <style>
+        @page { size: Letter; margin: 1in; }
+        body { font-family: Arial, sans-serif; margin: 0.5in 0.5in 0.5in 0.5in; box-sizing: border-box; }
+        h1 { color: #333; font-size: 14px; }
+        p { font-size: 12px; color: #555; }
+        .header { text-align: center; margin-bottom: 20px; }
+        .patient-info { margin-bottom: 20px; }
+        .patient-info p { font-size: 13px; }
+        table { border: 1px solid #333; border-collapse: collapse; width: 100%; max-width: 100%; table-layout: fixed; word-break: break-word; }
+        th, td { border: 1px solid #333; padding: 6px; text-align: center; font-size: 11px; box-sizing: border-box; }
+        th { background: #f2f2f2; }
+        table.print-friendly tr td, table.print-friendly tr th { page-break-inside: avoid; }
+        textarea { width: 100%; height: 120px; font-size: 12px; box-sizing: border-box; background: rgb(158, 158, 163); }
+        .md-name { font-weight: bold; color: #333; }
+        .md-name textarea { width: 120px; height: 15px; font-size: 12px; background: rgb(158, 158, 163); }
+        .registration-method { font-weight: bold; color: #333; }
+        .registration-method textarea { width: 60px; height: 15px; font-size: 11px; background: rgb(158, 158, 163); }
+    </style>
+</head>
+<body>
+    <div class='header'>
+        <p>Date: {{run_date}}</p>
+        <h1>SPECIAL MEDICAL PHYSICS CONSULTATION REPORT - PRIOR RT ANALYSIS</h1>
+    </div>
+    <div class='patient-info'>
+        <p>Upon Dr. <span class='md-name'><textarea>{{physician_name}}</textarea></span>, M.D. request, a quantitative estimate of the cumulative dose for patient <strong>{{patient_last_name}}, {{patient_first_name}}</strong> was performed.</p>
+        <p>The patient has the following course(s) of radiation therapy:</p>
+    </div>
+
+    <div data-repeat="course_blocks" class='patient-info'>
+        <p><strong>Course ID:</strong> {{course_id}}</p>
+        <p><strong>Plans in this course:</strong></p>
+        <table class='print-friendly'>
+            <tr>
+                <th>Course ID</th>
+                <th>Plan ID</th>
+                <th>Energy</th>
+                <th>Fraction</th>
+                <th>Dose/Fraction (cGy)</th>
+                <th>Total Dose (cGy)</th>
+                <th>Elapsed Months</th>
+            </tr>
+            <tr data-repeat="plan_rows">
+                <td>{{course_id}}</td>
+                <td>{{plan_id}}</td>
+                <td>{{energy}}</td>
+                <td>{{delivered_fraction}}/{{planned_fraction}}</td>
+                <td>{{dose_per_fraction}}</td>
+                <td>{{total_dose}}</td>
+                <td>{{elapsed_months}}</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class='patient-info'>
+        <p><strong>Dose accumulation</strong></p>
+        <p><span data-repeat="show_registration_accumulation">Images from the previous treatment courses {{course_list_inline}} were fused to the current treatment planning CT using <span class='registration-method'><textarea>{{registration_type}}</textarea></span> registration.</span><span> Dose from prior treatment course(s) were accumulated using Eclipse system.</span><span data-repeat="show_conservative_expansion"> Only doses within {{conservative_region}} were evaluated, using the conservative maximum-dose method.</span><span data-repeat="show_conservative_accumulation"> For each prior plan the structure's near-max dose (D0.1cc) was converted to EQD2 and summed across plans, assuming the per-plan hotspots coincide (worst case).</span> The following organ(s) require careful assessment due to prior radiation exposure: {{structure_list_inline}}</p>
+        <p>The following discount factors were applied to each organ, estimated based on the time elapsed since the delivery of each plan:</p>
+        <table class='print-friendly' data-repeat="show_registration_accumulation">
+            <tr>
+                <th rowspan='2'>Structure<br>Name</th>
+                <th rowspan='2'>Registration<br>Confidence</th>
+                <th colspan='{{plan_count}}'>Discount (%)</th>
+            </tr>
+            <tr>
+                <th data-repeat="discount_columns">{{plan_id}} <br> {{elapsed_months}} month(s)</th>
+            </tr>
+            <tr data-repeat="discount_rows">
+                <td>{{structure_name}}</td>
+                <td>{{registration_confidence}}</td>
+                <td data-repeat="discount_cells">{{discount}}</td>
+            </tr>
+        </table>
+        <table class='print-friendly' data-repeat="show_conservative_accumulation">
+            <tr>
+                <th rowspan='2'>Structure<br>Name</th>
+                <th colspan='2' data-repeat="discount_columns">{{plan_id}} <br> {{elapsed_months}} month(s)</th>
+            </tr>
+            <tr>
+                <th data-repeat="conservative_subheaders">{{label}}</th>
+            </tr>
+            <tr data-repeat="conservative_rows">
+                <td>{{structure_name}}</td>
+                <td data-repeat="conservative_cells">{{value}}</td>
+            </tr>
+        </table>
+    </div>
+
+    <div data-repeat="show_pre_plan">
+        <p><strong>Pre-plan analysis:</strong></p>
+        <p data-repeat="pre_plan_rows">The critical organ <strong>{{structure_name}}</strong> received D0.1cc = <strong>{{received_eqd2}}</strong> EQD2 from prior treatment course(s) {{course_list}}.<span data-repeat="show_remainder"> To meet the suggested dose constraint of <strong>{{pre_constraint}} EQD2</strong>, the suggested maximum physical dose ({{metric}}) is <strong>{{remainder}}</strong> for a {{new_plan_fx}}-fraction plan.</span></p>
+        <p>Please note this recommendation could be overly conservative, as it represents the worst-case scenario where the maximum dose of prior plan and new plan coincide.</p>
+    </div>
+
+    <div data-repeat="show_eqd2">
+        <p><strong>Accumulated EQD2 Dose Constraints:</strong></p>
+        <p>EQD2 conversion was performed using the Eclipse system with the corresponding &alpha;/&beta; listed below. The accumulated EQD2 dose was calculated using the dose-forgiveness parameters specified in the dose discount table. <span data-repeat="show_registration_accumulation"> DVH analysis is conducted to evaluate the dose metrics specified by the physician on the composite plan.</span></p>
+        <table class='print-friendly'>
+            <tr>
+                <th>Structure Name</th>
+                <th>&alpha;/&beta; (Gy)</th>
+                <th>Constraint<br>Metric</th>
+                <th>Evaluation</th>
+                <th>UMichigan<br>Constraints<sup>*</sup></th>
+                <th>SABR<br>Constraints<sup>#</sup></th>
+            </tr>
+            <tr data-repeat="eqd2_constraint_rows" style='{{row_style}}'>
+                <td>{{structure_name}}</td>
+                <td>{{alpha_beta}}</td>
+                <td>{{metric}}</td>
+                <td>{{evaluation}}</td>
+                <td>{{michigan}}</td>
+                <td>{{sabr}}</td>
+            </tr>
+        </table>
+        <p>Note:<br>
+        Table rows are color coded based on the evaluation of the UMichigan constraints.<br>
+        <sup>*</sup>: The UMichigan constraints are from Paradis, Kelly C. et al, Int J Radiat Oncol Biol Phys, 2025.<br>
+        <sup>#</sup>: {{institution_constraint_attribution}}</p>
+        <p><strong>Comments:</strong></p>
+        <textarea>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</textarea>
+        <p data-repeat="show_registration_accumulation">It should be noted that uncertainties inherent in the registration process may affect the accuracy of the dose assessment. Reported cumulative doses and constraints are approximate and should be reviewed carefully on a case-by-case basis by the clinical team.</p>
+    </div>
+
+    <div data-repeat="show_physical">
+        <p><strong>Accumulated Physical Dose Statistics:</strong></p>
+        <p>The cumulative physical dose was computed using the dose-forgiveness parameters specified in the dose discount table. Dose metrics for the critical organ(s) are summarized below.</p>
+        <table class='print-friendly'>
+            <tr>
+                <th>Structure Name</th>
+                <th>Metric</th>
+                <th>Evaluation</th>
+            </tr>
+            <tr data-repeat="physical_stat_rows">
+                <td>{{structure_name}}</td>
+                <td>{{metric}}</td>
+                <td>{{evaluation}}</td>
+            </tr>
+        </table>
+    </div>
+
+    <div data-repeat="show_post_constraint_appendix">
+        <span><br clear=all style='page-break-before:always'></span>
+        <p><strong>Dose distribution screen capture</strong></p>
+        <div style='border: 2px solid #444; padding: 20px; margin-bottom: 20px; background: #f9f9f9; text-align: center;'>
+            <span style='color:#888;'>&nbsp;</span>
+        </div>
+        <span><br clear=all style='page-break-before:always'></span>
+        <p><strong>DVH Plots:</strong></p>
+        {{dvh_eqd2_img_html}}
+        {{dvh_phys_img_html}}
+    </div>
+</body>
+</html>

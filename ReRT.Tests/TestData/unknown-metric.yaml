@@ -1,0 +1,7 @@
+structures:
+  Lung:
+    alphaBetaRatio: 2.5
+    aliases: [Lung]
+    constraints:
+      Michigan:
+        - {metric: NotARealMetric, op: '<', limit: 10Gy}

@@ -1,0 +1,148 @@
+# Recovery curves: per-structure discount-by-month mapping.
+#
+# Schema:
+#   recoveryCurves.<Label>.discount:  [d0, d1, d2, ...]   percent (0..100+)
+#   recoveryCurves.<Label>.timepoint: [t0, t1, t2, ...]   months
+#
+# Semantics (implemented by DiscountCalculator):
+#   - At month <= timepoint[i] - 0.5, the discount value is values[i].
+#   - In the half-month window (timepoint[i] - 0.5, timepoint[i]] the curve
+#     linearly interpolates from values[i] to values[i+1] (or to beyondValue
+#     when i is the last edge).
+#   - Past the last timepoint, the discount is `max(50.0, last value)`.
+#
+# Note: discount and timepoint arrays may differ in length (see "Other").
+# When more discount values are listed than timepoints, the trailing values
+# are used as the post-edge target during interpolation.
+
+recoveryCurves:
+
+  Body:
+    discount:  [0.0, 10.0, 25.0, 50.0]
+    timepoint: [3.0,  6.0, 12.0, 36.0]
+
+  Bladder:
+    discount:  [0.0, 10.0, 25.0, 50.0]
+    timepoint: [3.0,  6.0, 12.0, 36.0]
+
+  Bowel_Small:
+    discount:  [0.0,  0.0, 25.0, 40.0]
+    timepoint: [3.0,  6.0, 12.0, 36.0]
+
+  BrachialPlexus:
+    discount:  [0.0, 10.0, 25.0, 50.0]
+    timepoint: [3.0,  6.0, 12.0, 36.0]
+
+  Brain:
+    discount:  [0.0, 10.0, 25.0, 50.0]
+    timepoint: [3.0,  6.0, 12.0, 36.0]
+
+  Brainstem:
+    discount:  [0.0, 10.0, 25.0, 50.0]
+    timepoint: [3.0,  6.0, 12.0, 36.0]
+
+  Bronchus:
+    discount:  [0.0, 10.0, 25.0, 50.0]
+    timepoint: [3.0,  6.0, 12.0, 36.0]
+
+  CaudaEquina:
+    discount:  [0.0, 10.0, 25.0, 50.0]
+    timepoint: [3.0,  6.0, 12.0, 36.0]
+
+  Cochlea:
+    discount:  [0.0, 10.0, 25.0, 50.0]
+    timepoint: [3.0,  6.0, 12.0, 36.0]
+
+  Colon:
+    discount:  [0.0, 10.0, 25.0, 50.0]
+    timepoint: [3.0,  6.0, 12.0, 36.0]
+
+  Colon_Sigmoid:
+    discount:  [0.0, 10.0, 25.0, 50.0]
+    timepoint: [3.0,  6.0, 12.0, 36.0]
+
+  Bowel_Large:
+    discount:  [0.0, 10.0, 25.0, 50.0]
+    timepoint: [3.0,  6.0, 12.0, 36.0]
+
+  Duodenum:
+    discount:  [0.0,  0.0, 25.0, 25.0]
+    timepoint: [3.0,  6.0, 12.0, 36.0]
+
+  Esophagus:
+    discount:  [0.0, 10.0, 25.0, 50.0]
+    timepoint: [3.0,  6.0, 12.0, 36.0]
+
+  GreatVessel:
+    discount:  [0.0, 10.0, 25.0, 50.0]
+    timepoint: [3.0,  6.0, 12.0, 36.0]
+
+  Aorta:
+    discount:  [0.0, 10.0, 25.0, 50.0]
+    timepoint: [3.0,  6.0, 12.0, 36.0]
+
+  Heart:
+    discount:  [0.0, 10.0, 25.0, 50.0]
+    timepoint: [3.0,  6.0, 12.0, 36.0]
+
+  Larynx:
+    discount:  [0.0, 10.0, 25.0, 50.0]
+    timepoint: [3.0,  6.0, 12.0, 36.0]
+
+  Musc_Constrict_S:
+    discount:  [0.0, 10.0, 25.0, 50.0]
+    timepoint: [3.0,  6.0, 12.0, 36.0]
+
+  Musc_Constrict_I:
+    discount:  [0.0, 10.0, 25.0, 50.0]
+    timepoint: [3.0,  6.0, 12.0, 36.0]
+
+  OpticChiasm:
+    discount:  [0.0, 10.0, 25.0, 50.0]
+    timepoint: [3.0,  6.0, 12.0, 36.0]
+
+  OpticNerve:
+    discount:  [0.0, 10.0, 25.0, 50.0]
+    timepoint: [3.0,  6.0, 12.0, 36.0]
+
+  Rectum:
+    discount:  [0.0, 10.0, 25.0, 50.0]
+    timepoint: [3.0,  6.0, 12.0, 36.0]
+
+  Retina:
+    discount:  [0.0, 10.0, 25.0, 50.0]
+    timepoint: [3.0,  6.0, 12.0, 36.0]
+
+  SacralPlexus:
+    discount:  [0.0, 10.0, 25.0, 50.0]
+    timepoint: [3.0,  6.0, 12.0, 36.0]
+
+  SpinalCord:
+    discount:  [0.0, 10.0, 25.0, 50.0]
+    timepoint: [3.0,  6.0, 12.0, 36.0]
+
+  Stomach:
+    discount:  [0.0,  0.0, 25.0, 40.0]
+    timepoint: [3.0,  6.0, 12.0, 36.0]
+
+  Trachea:
+    discount:  [0.0, 10.0, 25.0, 50.0]
+    timepoint: [3.0,  6.0, 12.0, 36.0]
+
+  Lung:
+    discount:  [0.0,  0.0, 25.0,    50.0]
+    timepoint: [3.0,  6.0, 24.0, 99999.0]
+
+  Liver:
+    discount:  [0.0,  0.0, 50.0,   100.0]
+    timepoint: [3.0,  6.0, 24.0, 99999.0]
+
+  Kidney:
+    discount:  [0.0,  0.0,  0.0,     0.0]
+    timepoint: [3.0,  6.0, 24.0, 99999.0]
+
+  # Mismatched lengths are intentional: the trailing 50.0 is consumed as
+  # the "post-edge target" by the interpolation in DiscountCalculator.
+  Other:
+    discount:  [0.0, 10.0, 25.0, 50.0]
+    timepoint: [3.0,  6.0, 12.0]

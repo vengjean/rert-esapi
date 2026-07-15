@@ -1,0 +1,36 @@
+# Build / IDE artifacts (match at any depth)
+**/.vs/
+**/bin/
+**/obj/
+**/packages/
+**/Compiled/
+PluginLauncher/
+
+# OS / editor cruft
+Thumbs.db
+**/Thumbs.db
+.DS_Store
+desktop.ini
+
+# Visual Studio user/local files
+*.user
+*.suo
+*.userprefs
+*.cache
+*.pdb
+
+# Vendor DLLs / signatures
+VMS.TPS.Common.Model.API.dll
+VMS.TPS.Common.Model.API.xml
+VMS.TPS.Common.Model.Types.dll
+VMS.TPS.Common.Model.Types.xml
+*.p7s
+
+# Institution-specific configuration — never commit these.
+# The .sample.yaml counterpart (committed) is what forking centers copy.
+Configuration/InstitutionConfig.local.yaml
+Configuration/Logo.local.png
+Configuration/*.local.*
+
+# Validation directory
+Validation/*

@@ -1,0 +1,4 @@
+structures:
+  Lung:
+    alphaBetaRatio: 2.5
+    aliases: ["unterminated quoted scalar with no closing quote

@@ -1,0 +1,53 @@
+﻿<!--
+  ReRT - https://github.com/vengjean/rert-esapi
+  Copyright (c) 2025-2026 Veng Jean Heng. Licensed under the MIT License; see LICENSE.
+  SPDX-License-Identifier: MIT
+  Portions derived from DoseConverter (https://github.com/NickChng/DoseConverter),
+  Copyright (c) 2021 Denis Brojan, MIT License.
+-->
+<UserControl x:Class="ReRT.DescriptionView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:ReRT"
+             xmlns:behaviours="clr-namespace:ReRT.Behaviours"
+             xmlns:e="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+             mc:Ignorable="d"
+             d:DesignHeight="800"
+             d:DesignWidth="800"
+             d:MinHeight="100"
+             d:MinWidth="100"
+             HorizontalContentAlignment="Stretch"
+             VerticalContentAlignment="Stretch">
+    <Border CornerRadius="4,4,4,4"
+            Background="White"
+            Margin="5,0,5,0"
+            BorderBrush="CornflowerBlue"
+            BorderThickness="2"
+            MaxHeight="800"
+            MaxWidth="800"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch">
+        <Grid HorizontalAlignment="Stretch"
+              VerticalAlignment="Stretch"
+              Margin="5,5,5,5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0"
+                       Margin="10,5,10,0"
+                       FontSize="12"
+                       behaviours:HtmlTextBoxProperties.HtmlText="{Binding Path=Description}"
+                       TextWrapping="Wrap"/>
+            <Image Grid.Row="1"
+                   Source="\ReRT.esapi;component\Resources\ReRT_Default.png"
+                   Height="650"
+                   Margin="10,5,10,0"
+                   Stretch="Uniform"
+                   VerticalAlignment="Center"/>
+        </Grid>
+    </Border>
+</UserControl>

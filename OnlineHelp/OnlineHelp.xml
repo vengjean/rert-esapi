@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<OnlineHelpDefinitions>
+  <Definitions>
+    <Definition DefinitionId="Source dose" Text="Select the plan sum from which to convert to EQD2. The individual plan fractionation will be used for the conversion. Ensure that the dose prescription was properly set. The final summed dose will be calculated on the plan sum's selected image coordinate system. If the script is to be used for a single past-plan, make a dummy plan sum with only that plan. The following table lists the default discount and constraint values for each OAR. Discount factors are linearly interpolated within a half month window preceding each timespan breakpoint."/>
+  </Definitions>
+</OnlineHelpDefinitions>

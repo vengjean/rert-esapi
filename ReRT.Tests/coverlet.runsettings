@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Pass to dotnet test:
+    dotnet test --collect:"XPlat Code Coverage" --settings coverlet.runsettings
+  Output lands under TestResults/<guid>/coverage.cobertura.xml.
+
+  Exclusions:
+    - DocxWriter: Spire.Doc/System.Drawing-coupled, validated by smoke test.
+    - EsapiDvhProvider: thin ESAPI adapter, can't be exercised without ESAPI.
+  Excluded by file:
+    - Properties/AssemblyInfo.cs: attribute-only, no executable code.
+-->
+<RunSettings>
+  <DataCollectionRunSettings>
+    <DataCollectors>
+      <DataCollector friendlyName="XPlat code coverage">
+        <Configuration>
+          <Format>cobertura</Format>
+          <Exclude>[ReRT]ReRT.Reporting.DocxWriter,[ReRT]ReRT.Domain.DoseMetrics.EsapiDvhProvider</Exclude>
+          <ExcludeByFile>**/Properties/AssemblyInfo.cs</ExcludeByFile>
+        </Configuration>
+      </DataCollector>
+    </DataCollectors>
+  </DataCollectionRunSettings>
+</RunSettings>

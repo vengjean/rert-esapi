@@ -1,0 +1,35 @@
+# ReRT institution configuration (sample / template).
+#
+# To customize for your center:
+#   1. Copy this file to `InstitutionConfig.local.yaml` (gitignored).
+#   2. Edit the values below.
+#   3. Optional: drop a logo image at the path you set in `logoPath`.
+#
+# Your institution's real values are NOT in this file — they live in the
+# gitignored `InstitutionConfig.local.yaml` on the deployed machines.
+
+institution:
+  # Plain-text name of the institution (currently informational; reserved
+  # for future report metadata).
+  name: "Your Institution Name"
+
+  # Department header shown in the per-page Word header next to the logo.
+  departmentHeader: "Department of Radiation Oncology"
+
+  # Path to a logo image. Resolved relative to the project root, or use
+  # an absolute path. Leave empty to render no logo.
+  logoPath: ""
+
+  # Optional sentence shown beneath the SABR constraint table to explain
+  # where those constraints come from. Leave empty to omit the line.
+  constraintAttribution: ""
+
+reportOutputs:
+  # One or more locations where the generated Word doc is written.
+  # `displayName` is informational; `path` is a folder.
+  # `match` is an optional substring of the patient's hospital field
+  # used to route reports to a specific path; leave empty to write to
+  # all locations regardless of hospital.
+  - displayName: "Default Output"
+    match: ""
+    path: "C:\\ReRT_Reports"

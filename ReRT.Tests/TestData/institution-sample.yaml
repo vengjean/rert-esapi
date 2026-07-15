@@ -1,0 +1,10 @@
+institution:
+  name: "Your Institution Name"
+  departmentHeader: "Department of Radiation Oncology"
+  logoPath: ""
+  constraintAttribution: ""
+
+reportOutputs:
+  - displayName: "Default Output"
+    match: ""
+    path: "C:\\ReRT_Reports"

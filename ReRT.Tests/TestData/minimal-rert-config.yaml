@@ -1,0 +1,27 @@
+version: 0.1
+
+defaults:
+  alphaBetaRatio: 2.5
+
+structures:
+  Lung:
+    alphaBetaRatio: 2.5
+    aliases: [Lung, Lungs, Total_Lung]
+    constraints:
+      Michigan:
+        - {metric: VolumeSpared, dose: 16Gy, op: '>', limit: 1000cc}
+      SABR:
+        - null
+        - {metric: V, dose: 20Gy, op: '<', limit: 40%}
+    extraMetrics:
+      PHYS:
+        - {metric: V, dose: 20Gy}
+
+  Bowel_Small:
+    alphaBetaRatio: 3.0
+    aliases: [Bowel_Small, SmallBowel, Small_Bowel]
+    constraints:
+      SABR:
+        - {metric: Dmax, op: '<', limit: 30Gy}
+      Michigan:
+        - {metric: Dmax, op: '<=', limit: 5400cGy}

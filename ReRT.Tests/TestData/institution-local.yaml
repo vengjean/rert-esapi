@@ -1,0 +1,16 @@
+institution:
+  name: "Example Cancer Center"
+  departmentHeader: "Department of Radiation Oncology"
+  logoPath: "Configuration\\Logo.local.png"
+  constraintAttribution: "The SABR constraints are derived from Stanford de novo 5fx constraints (or Timmerman 5fx constraints if the former is not available) with &alpha;/&beta;=2.5."
+
+reportOutputs:
+  - displayName: "Hospital A Isodose Plans"
+    match: "hospitalA"
+    path: "\\\\fileserver.example.org\\dept\\RadiationOncology\\Public\\HospitalA - Isodose Plans"
+  - displayName: "Hospital B Isodose Plans"
+    match: "hospitalB"
+    path: "\\\\fileserver.example.org\\dept\\RadiationOncology\\Public\\HospitalB - Isodose Plans"
+  - displayName: "Default Fallback"
+    match: ""
+    path: "\\\\fileserver.example.org\\dept\\RadiationOncology\\Public\\HospitalA - Isodose Plans"
